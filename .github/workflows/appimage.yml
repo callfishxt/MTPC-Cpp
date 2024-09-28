@@ -22,7 +22,9 @@ jobs:
         cmake-version: '3.25'
 
     - name: Install dependencies
-      run: sudo apt-get install -y libjsoncpp-dev appimagetool
+      run: |
+        sudo apt-get update 
+        sudo apt-get install -y libjsoncpp-dev appimagetool
 
     - name: Configure CMake
       run: |
