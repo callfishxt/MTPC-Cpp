@@ -1,3 +1,0 @@
-/var/home/callfishxt/Документы/Projects/cpp/mtpc/build/CMakeFiles/mtpc.dir
-/var/home/callfishxt/Документы/Projects/cpp/mtpc/build/CMakeFiles/edit_cache.dir
-/var/home/callfishxt/Документы/Projects/cpp/mtpc/build/CMakeFiles/rebuild_cache.dir
