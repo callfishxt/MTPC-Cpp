@@ -5,6 +5,5 @@ Name=mtpc
 Comment=Minecraft texture pack converter
 TryExec=mtpc
 Exec=mtpc
-Icon=mtpc
 MimeType=image/x-foo;
 Categories=Game;
