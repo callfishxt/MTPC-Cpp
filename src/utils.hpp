@@ -57,12 +57,7 @@ std::string replace_substring(std::string str, const std::string& oldSubstr, con
     return str;
 }
 
-std::filesystem::path get_id(const std::string& cppath) {
-    std::filesystem::path fspath = cppath;
-    return fspath.filename();
-}
-
-void save_package(const std::string& name, const std::string& path, std::string description) {
+void save_package(const std::string& name,  std::string path, std::string description) {
     std::ofstream file(path + "/package.json");
     
     if (!file.is_open()) {
@@ -70,7 +65,12 @@ void save_package(const std::string& name, const std::string& path, std::string 
         return;
     }
 
-    std::string id = get_id(path);
+    for (char& c : path) {
+        if (c == '\\') {
+            c = '/';
+        }
+    }
+    std::string id = path.substr(path.find_last_of("/") + 1);
     description = replace_substring(description,"\n","");
     
     file << "{\n";
