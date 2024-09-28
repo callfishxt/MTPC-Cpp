@@ -57,7 +57,7 @@ std::string replace_substring(std::string str, const std::string& oldSubstr, con
     return str;
 }
 
-std::string get_id(const std::string& cppath) {
+std::filesystem::path get_id(const std::string& cppath) {
     std::filesystem::path fspath = cppath;
     return fspath.filename();
 }
