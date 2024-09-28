@@ -37,25 +37,14 @@ jobs:
       run: |
         cd build
         cmake --build .
-
-    - name: Create AppImage
-      run: |
-        mkdir -p AppDir/usr/bin
-        cp build/mtpc AppDir/usr/bin/
-        # Create a simple AppImage metadata file
-        echo "[Desktop Entry]" > AppDir/mtpc.desktop
-        echo "Name=mtpc" >> AppDir/mtpc.desktop
-        echo "Exec=mtpc" >> AppDir/mtpc.desktop
-        echo "Icon=mtpc" >> AppDir/mtpc.desktop
-        echo "Type=Application" >> AppDir/mtpc.desktop
-        echo "Categories=Utility;" >> AppDir/mtpc.desktop
-        # Copy an icon if you have one (optional)
-        # cp path/to/icon.png AppDir/mtpc.png
-        # Create the AppImage
-        appimagetool AppDir mtpc.AppImage
-
-    - name: Upload AppImage
-      uses: actions/upload-artifact@v3
+    - name: Build AppImage
+      uses: AppImageCrafters/build-appimage-action@fe2205a4d6056be47051f7b1b3811106e9814910
+      env:
+        UPDATE_INFO: gh-releases-zsync|callfishxt|mtpc-cpp|latest|*x86_64.AppImage.zsync
       with:
-        name: mtpc-appimage
-        path: mtpc.AppImage
+        recipe: dev/AppImageBuilder.yml
+        
+    - uses: actions/upload-artifact@v4
+      with:
+        name: AppImage
+        path: './*.AppImage*'
