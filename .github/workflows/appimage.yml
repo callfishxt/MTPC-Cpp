@@ -37,8 +37,13 @@ jobs:
       run: |
         cd build
         cmake --build .
+        mkdir app
+        cd ..
+        cp build/mtpc build/app/mtpc
+        cp packs.json build/app/packs.json
+        cp config.sff build/app/config.sff
         
     - uses: actions/upload-artifact@v4
       with:
         name: mtpc
-        path: 'build/mtpc'
+        path: 'build/app/*'
