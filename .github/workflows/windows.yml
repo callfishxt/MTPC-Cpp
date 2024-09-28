@@ -31,9 +31,15 @@ jobs:
       run: |
         cd build
         cmake --build .
-        mkdir app
-        cd ..
-        copy build\mtpc build\app\mtpc
+
+    - name: List build directory
+      run: |
+        dir build
+
+    - name: Create app directory and copy files
+      run: |
+        mkdir build\app
+        copy build\Debug\mtpc.exe build\app\mtpc.exe
         copy packs.json build\app\packs.json
         copy config.sff build\app\config.sff
         
