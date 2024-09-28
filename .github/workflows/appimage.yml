@@ -21,12 +21,6 @@ jobs:
       with:
         cmake-version: '3.25'
 
-    - name: Install dependencies
-      run: |
-        wget https://github.com/AppImage/AppImageKit/releases/latest/download/appimagetool-x86_64.AppImage
-        chmod +x appimagetool-x86_64.AppImage
-        sudo mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
-
     - name: Configure CMake
       run: |
         mkdir build
