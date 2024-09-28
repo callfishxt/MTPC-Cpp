@@ -2,7 +2,7 @@
 #include <cstring>
 #include <ctime>
 #include <iostream>
-#include <json/json.h>
+#include <nlohmann/json.hpp> // Include nlohmann/json
 #include <fstream>
 #include "libs/sff/sff.h"
 #include "images.hpp"
@@ -22,7 +22,7 @@ std::string pack_format;
 std::string description = "A Converted Minecraft Texture Pack"; 
 sff *cm = new sff;
 
-//Functions
+// Functions
 void console::log(const std::string& message, cause log_cause) {
     std::time_t t = std::time(nullptr);
     std::tm* now = std::localtime(&t);
@@ -77,9 +77,8 @@ void save_package(const std::string& name, const std::string& path, std::string 
     file.close();
 }
 
-
-Json::Value json_loadf(const std::string& path) {
-    Json::Value data;
+nlohmann::json json_loadf(const std::string& path) {
+    nlohmann::json data;
     std::ifstream file(path);
     if (!file.is_open()) {
         std::cout << "[E] <utils> file can't be opened\n";
@@ -106,51 +105,50 @@ void convert_texture(const std::string& from, const std::string& to) {
 void converting_textures() {
     std::cout << "[I] <utils> convert function load\n";
     std::string path_to_blocks_tp;
-    Json::Value data = json_loadf("packs.json");
+    nlohmann::json data = json_loadf("packs.json");
 
-        if (std::filesystem::exists(cdata["texture_pack_path"] + "/assets/minecraft/textures/block")) {
+    if (std::filesystem::exists(cdata["texture_pack_path"] + "/assets/minecraft/textures/block")) {
         path_to_blocks_tp = cdata["texture_pack_path"] + "/assets/minecraft/textures/block/";
     } else if (std::filesystem::exists(cdata["texture_pack_path"] + "/assets/minecraft/textures/blocks")) {
         path_to_blocks_tp = cdata["texture_pack_path"] + "/assets/minecraft/textures/blocks/";
     } else {
-        std::cout << "[E] <utils> Texture path does not exist." << std::endl;
+                std::cout << "[E] <utils> Texture path does not exist." << std::endl;
         return;
     }
     
-    if (!data.isMember(pack_format) || !data[pack_format].isMember("blocks")) {
+    if (!data.contains(pack_format) || !data[pack_format].contains("blocks")) {
         std::cout << "[E] <utils> Invalid pack format or blocks not found in JSON." << std::endl;
         return;
     }
     
-    for (const auto& key : data[pack_format]["blocks"].getMemberNames()) {
-        std::string source_path = path_to_blocks_tp + key + ".png";
-        std::string dest_path = cdata["content_pack_path"] + "/textures/blocks/" + data[pack_format]["blocks"][key].asString() + ".png";
+    for (const auto& key : data[pack_format]["blocks"].items()) {
+        std::string source_path = path_to_blocks_tp + key.key() + ".png";
+        std::string dest_path = cdata["content_pack_path"] + "/textures/blocks/" + key.value().get<std::string>() + ".png";
 
         convert_texture(source_path, dest_path);
         if (cdata["use_colorize"] == "true") {
-            for (int i=0;i<data[pack_format]["gray_color"].size();i++) {
-                if (data[pack_format]["gray_color"][i] == key) {
-                    colorize(source_path,dest_path);
+            for (const auto& gray_key : data[pack_format]["gray_color"]) {
+                if (gray_key.get<std::string>() == key.key()) {
+                    colorize(source_path, dest_path);
                 }
             }
         }
-        
     }
-        
-    
-
-    
 }
 
 void mcpack_getinfo(const std::string& texture_pack_path) {
-    Json::Value data = json_loadf(texture_pack_path);
+    nlohmann::json data = json_loadf(texture_pack_path);
 
-    if (data.isMember("pack")) {
-        if (data["pack"].isMember("description") && !data["pack"]["description"].isNull()) {
-            description = data["pack"]["description"].asString();
+    if (data.contains("pack")) {
+        if (data["pack"].contains("description") && !data["pack"]["description"].is_null()) {
+            description = data["pack"]["description"].get<std::string>();
         }
-        if (data["pack"].isMember("pack_format") && !data["pack"]["pack_format"].isNull()) {
-            pack_format = data["pack"]["pack_format"].asString();
+        if (data["pack"].contains("pack_format") && !data["pack"]["pack_format"].is_null()) {
+            if (data["pack"]["pack_format"].is_number()) {
+                pack_format = std::to_string(data["pack"]["pack_format"].get<int>());
+            } else {
+                pack_format = data["pack"]["pack_format"].get<std::string>();
+            }
         }
     }
 }
