@@ -1,40 +1,58 @@
-name: C/C++ AppImage
+name: CMake Build and AppImage
 
 on:
   push:
-    branches: [ "main", "release-**"]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build-appimage:
-
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-latest
-
-    runs-on: ${{ matrix.os }}
+  build:
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: 'true'
-      - name: install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libjsoncpp-dev
-      - name: configure
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Releas
-      - name: build
-        run: cmake --build build
-      - name: Build AppImage
-        uses: AppImageCrafters/build-appimage-action@fe2205a4d6056be47051f7b1b3811106e9814910
-        env:
-          UPDATE_INFO: gh-releases-zsync|callfishxt|mtpc-cpp|latest|*x86_64.AppImage.zsync
-        with:
-          recipe: dev/AppImageBuilder.yml
-      - uses: actions/upload-artifact@v4
-        with:
-          name: AppImage
-          path: './*.AppImage*'
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up CMake
+      uses: jwlawson/actions-setup-cmake@v1
+      with:
+        cmake-version: '3.25'
+
+    - name: Install dependencies
+      run: sudo apt-get install -y libjsoncpp-dev appimagetool
+
+    - name: Configure CMake
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+
+    - name: Build
+      run: |
+        cd build
+        cmake --build .
+
+    - name: Create AppImage
+      run: |
+        mkdir -p AppDir/usr/bin
+        cp build/mtpc AppDir/usr/bin/
+        # Create a simple AppImage metadata file
+        echo "[Desktop Entry]" > AppDir/mtpc.desktop
+        echo "Name=mtpc" >> AppDir/mtpc.desktop
+        echo "Exec=mtpc" >> AppDir/mtpc.desktop
+        echo "Icon=mtpc" >> AppDir/mtpc.desktop
+        echo "Type=Application" >> AppDir/mtpc.desktop
+        echo "Categories=Utility;" >> AppDir/mtpc.desktop
+        # Copy an icon if you have one (optional)
+        # cp path/to/icon.png AppDir/mtpc.png
+        # Create the AppImage
+        appimagetool AppDir mtpc.AppImage
+
+    - name: Upload AppImage
+      uses: actions/upload-artifact@v2
+      with:
+        name: mtpc-appimage
+        path: mtpc.AppImage
