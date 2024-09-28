@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: fedora-latest
+          - os: ubuntu-latest
 
     runs-on: ${{ matrix.os }}
 
