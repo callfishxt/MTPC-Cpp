@@ -52,7 +52,7 @@ jobs:
         appimagetool AppDir mtpc.AppImage
 
     - name: Upload AppImage
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: mtpc-appimage
         path: mtpc.AppImage
