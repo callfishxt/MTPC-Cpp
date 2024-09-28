@@ -16,6 +16,11 @@ AppDir:
     - sourceline: deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
     - sourceline: deb http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
     - sourceline: deb http://archive.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
+    include:
+    - libbz2-1.0
+    - libexpat1
+    - libfam0
+    - libgcrypt20
     exclude:
       - hicolor-icon-theme
       - sound-theme-freedesktop
