@@ -39,5 +39,5 @@ jobs:
         
     - uses: actions/upload-artifact@v4
       with:
-        name: mtpc
+        name: mtpc_linux_x86_64
         path: 'build/app/*'
