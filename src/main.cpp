@@ -5,10 +5,13 @@
 #include "libs/sff/sff.h"
 #include "global_variables.hpp"
 #include "main.hpp"
+#include "libs/sff/sff.h"
+#include "console.hpp"
 
 
 int main(int argc, char* argv[]) {
-
+    sff *cm = new sff; 
+    term console;
 
     console.log("Minecraft Texture Pack Converter To Content Pack is Started!",cause::info);
     cm->loadFile("config.sff",cdata);
