@@ -1,8 +1,13 @@
 
-#include "utils.hpp"
+#include <filesystem>
+
+#include "console.hpp"
+#include "libs/sff/sff.h"
+#include "global_variables.hpp"
+#include "main.hpp"
+
 
 int main(int argc, char* argv[]) {
-    console console;
 
 
     console.log("Minecraft Texture Pack Converter To Content Pack is Started!",cause::info);
